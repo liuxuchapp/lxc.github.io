@@ -210,6 +210,122 @@
             
 
   
+    <article id="post-docker-cluster" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2023/09/28/docker-cluster/" target="_blank">使用docker-compose搭建服务集群</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/2023/09/28/docker-cluster/" class="archive-article-date">
+        <time datetime="2023-09-28T08:32:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-28</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><h3 id="使用docker-compose搭建nacos集群"><a href="#使用docker-compose搭建nacos集群" class="headerlink" title="使用docker-compose搭建nacos集群"></a>使用docker-compose搭建nacos集群</h3><p>环境要求:1.docker;2.本地或者线上mysql 8.0(如果是8.0以下修改url);3.nacos版本2.2.3(稳定版本)<br>以下为docker-compose.yml<br>创建名为 docker-compose.yml的文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"> version: &#x27;3&#x27;</span><br><span class="line">services:</span><br><span class="line">  nacos1:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos1</span><br><span class="line">    hostname: nacos1</span><br><span class="line">    ports:</span><br><span class="line">      - 8848:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">   </span><br><span class="line">  nacos2:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos2</span><br><span class="line">    hostname: nacos2</span><br><span class="line">    ports:</span><br><span class="line">      - 8849:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">   </span><br><span class="line">  nacos3:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos3</span><br><span class="line">    hostname: nacos3</span><br><span class="line">    ports:</span><br><span class="line">      - 8850:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<p>(理论上windows&#x2F;liunx操作一致)<br>使用终端进入到docker-compose.yml文件目录使用指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>注意事项<br>1.连接的数据库必须存在nacos的数据库,nacos的sql文件在pull到nacos容器内部获取;<br>2.连接localhost的数据库时,异常no datasoure set,未解决,应该是没连接到数据库,但同样的配置修改仅仅host即可连接到容器内部的数据库;</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dockerfile</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">docker-compose</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes-dashboard</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">zookeeper</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2023/09/28/docker-cluster/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-create-bolg" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -428,6 +544,38 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">dockerfile</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">docker-compose</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kubernetes-dashboard</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">zookeeper</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,16 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xiuhulxc.github.io">
-  <title>Tag: GitHub | xiuhulxc</title>
+  <title>使用docker-compose搭建服务集群 | xiuhulxc</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xiuhulxc">
-<meta property="og:url" content="http://xiuhulxc.github.io/tags/GitHub/index.html">
+  <meta name="description" content="快速入门使用docker-compose搭建nacos集群环境要求:1.docker;2.本地或者线上mysql 8.0(如果是8.0以下修改url);3.nacos版本2.2.3(稳定版本)以下为docker-compose.yml创建名为 docker-compose.yml的文件 12345678910111213141516171819202122232425262728293031323">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用docker-compose搭建服务集群">
+<meta property="og:url" content="http://xiuhulxc.github.io/2023/09/28/docker-cluster/index.html">
 <meta property="og:site_name" content="xiuhulxc">
+<meta property="og:description" content="快速入门使用docker-compose搭建nacos集群环境要求:1.docker;2.本地或者线上mysql 8.0(如果是8.0以下修改url);3.nacos版本2.2.3(稳定版本)以下为docker-compose.yml创建名为 docker-compose.yml的文件 12345678910111213141516171819202122232425262728293031323">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-28T08:32:55.000Z">
+<meta property="article:modified_time" content="2023-09-28T08:45:17.759Z">
 <meta property="article:author" content="xiuhu">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="dockerfile">
+<meta property="article:tag" content="docker-compose">
+<meta property="article:tag" content="nacos">
+<meta property="article:tag" content="kubernetes-dashboard">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="kafka">
+<meta property="article:tag" content="zookeeper">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="xiuhulxc" type="application/atom+xml">
@@ -203,73 +215,241 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-docker-cluster" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2023" class="archive-year">2023</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2023/08/09/create-bolg/" class="archive-article-date">
-        <time datetime="2023-08-09T05:51:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-08-09</time>
-</a>
-
-        </div>
-    	 
+      <header class="article-header">
   
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2023/08/09/create-bolg/" target="_blank">搭建免费个人博客</a>
   
+    <h1 class="article-title" itemprop="name">
+      使用docker-compose搭建服务集群
     </h1>
   
 
 
-        <div class="article-info info-on-right">
+  
+  
+<a href="/2023/09/28/docker-cluster/" class="archive-article-date">
+        <time datetime="2023-09-28T08:32:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-28</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><h3 id="使用docker-compose搭建nacos集群"><a href="#使用docker-compose搭建nacos集群" class="headerlink" title="使用docker-compose搭建nacos集群"></a>使用docker-compose搭建nacos集群</h3><p>环境要求:1.docker;2.本地或者线上mysql 8.0(如果是8.0以下修改url);3.nacos版本2.2.3(稳定版本)<br>以下为docker-compose.yml<br>创建名为 docker-compose.yml的文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"> version: &#x27;3&#x27;</span><br><span class="line">services:</span><br><span class="line">  nacos1:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos1</span><br><span class="line">    hostname: nacos1</span><br><span class="line">    ports:</span><br><span class="line">      - 8848:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">   </span><br><span class="line">  nacos2:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos2</span><br><span class="line">    hostname: nacos2</span><br><span class="line">    ports:</span><br><span class="line">      - 8849:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">   </span><br><span class="line">  nacos3:</span><br><span class="line">    image: nacos/nacos-server</span><br><span class="line">    container_name: nacos3</span><br><span class="line">    hostname: nacos3</span><br><span class="line">    ports:</span><br><span class="line">      - 8850:8848</span><br><span class="line">    environment:</span><br><span class="line">      - PREFER_HOST_MODE=hostname</span><br><span class="line">      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848</span><br><span class="line">      - MODE=cluster</span><br><span class="line">      - SPRING_DATASOURCE_PLATFORM=mysql</span><br><span class="line">      - DB_NUM=1</span><br><span class="line">      - DB_URL_0=jdbc:mysql://192.168.11.32:3307/nacos?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;rewriteBatchedStatements=true</span><br><span class="line">      - DB_USER=root</span><br><span class="line">      - DB_PASSWORD=root</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<p>(理论上windows&#x2F;liunx操作一致)<br>使用终端进入到docker-compose.yml文件目录使用指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>注意事项<br>1.连接的数据库必须存在nacos的数据库,nacos的sql文件在pull到nacos容器内部获取;<br>2.连接localhost的数据库时,异常no datasoure set,未解决,应该是没连接到数据库,但同样的配置修改仅仅host即可连接到容器内部的数据库;</p>
+
+    
+
+    
+
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          xiuhu
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="http://xiuhulxc.github.io/2023/09/28/docker-cluster/" title="使用docker-compose搭建服务集群" target="_blank">http://xiuhulxc.github.io/2023/09/28/docker-cluster/</a>
+        </li>
+        
+        <li>
+          <strong>版权声明： </strong>
           
+          本博客所有文章除特别声明外，均采用 <a href="https://github.com/JoeyBling/hexo-theme-yilia-plus/blob/master/LICENSE" rel="external nofollow" target="_blank">MIT</a> 许可协议。转载请注明出处！
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">GitHub</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">blog</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dockerfile</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">docker-compose</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes-dashboard</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">zookeeper</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+    
 
     
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=http://xiuhulxc.github.io/2023/09/28/docker-cluster/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2023/08/09/create-bolg/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">搭建免费个人博客</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">1.</span> <span class="toc-text">快速入门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8docker-compose%E6%90%AD%E5%BB%BAnacos%E9%9B%86%E7%BE%A4"><span class="toc-number">1.1.</span> <span class="toc-text">使用docker-compose搭建nacos集群</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname =
+    'true'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by
+      Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
 
 
           </div>
@@ -298,9 +478,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
